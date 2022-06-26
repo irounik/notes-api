@@ -1,8 +1,13 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+
+const sequelize = require('./db/database');
+const notesRoutes = require('./routes/notes');
 
 const app = express();
 
-const sequelize = require('./db/database');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/notes', notesRoutes);
 
 const PORT = process.env.PORT || 3000;
 
