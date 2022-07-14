@@ -1,41 +1,9 @@
-const { ObjectId } = require('mongodb');
-const { getDb } = require('../db/database');
+const mongoose = require('mongoose');
 
-const getNotesCollection = () => {
-  return getDb().collection('notes');
-};
+const noteSechma = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: String,
+});
 
-class Note {
-  constructor(title, description) {
-    this.title = title;
-    this.description = description;
-  }
-
-  save() {
-    return getNotesCollection().insertOne(this);
-  }
-
-  static findAll() {
-    return getNotesCollection().find().toArray();
-  }
-
-  static findById(id) {
-    return getNotesCollection().findOne({ _id: ObjectId(id) });
-  }
-
-  static update(id, title, description) {
-    const updateDoc = { $set: { title: title } };
-
-    if (description) {
-      updateDoc.$set = { ...updateDoc.$set, description: description };
-    }
-
-    return getNotesCollection().updateOne({ _id: ObjectId(id) }, updateDoc);
-  }
-
-  static delete(id) {
-    return getNotesCollection().deleteOne({ _id: ObjectId(id) });
-  }
-}
-
+const Note = mongoose.model('Note', noteSechma);
 module.exports = Note;
