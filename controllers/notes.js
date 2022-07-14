@@ -3,7 +3,7 @@ const Note = require('../models/note');
 const response = require('../utils/response');
 
 exports.getNotes = (req, res) => {
-  Note.findAll()
+  Note.find({})
     .then((notes) => response.success(res, notes))
     .catch((err) => response.serverError(res, err));
 };
@@ -17,7 +17,7 @@ exports.addNote = (req, res) => {
     return;
   }
 
-  new Note(title, description)
+  new Note({ title: title, description: description })
     .save()
     .then(() => response.success(res, 'Note added successfully'))
     .catch((err) => response.serverError(res, err, 'Error in adding note'));
@@ -52,10 +52,12 @@ exports.updateNote = (req, res) => {
     return;
   }
 
-  Note.update(id, title, description)
+  Note.updateOne({ _id: id }, { title: title, description: description })
     .then((success) => {
-      if (success) response.success(res, `Successfully updated note with id: ${id}`);
-      else response.serverError(res, undefined, 'Something went wrong');
+      console.log(success);
+      if (!success) response.serverError(res, undefined, 'Something went wrong');
+      if (success.modifiedCount == 0) response.notFound(res, `Can't find any note with ID: ${id}`);
+      else response.success(res, `Successfully updated note with id: ${id}`);
     })
     .catch((err) => console.log(err));
 };
@@ -63,11 +65,12 @@ exports.updateNote = (req, res) => {
 exports.deleteNoteById = (req, res) => {
   const id = req.params.id;
   if (!id || !ObjectId.isValid(id)) return response.badRequest(res, `Invalid note ID: ${id}`);
-  Note.delete(id)
+  Note.deleteOne({ _id: id })
     .then((success) => {
       console.log(success);
-      if (success) response.success(res, `Successfully deleted note with id: ${id}`);
-      else response.serverError(res, undefined, 'Something went wrong');
+      if (!success) response.serverError(res, undefined, 'Something went wrong');
+      if (success.deletedCount == 0) response.notFound(res, `Can't find any note with ID: ${id}`);
+      else response.success(res, `Successfully deleted note with id: ${id}`);
     })
     .catch((err) => response.serverError(res, err, "Couldn't delete the note"));
 };
