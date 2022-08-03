@@ -30,7 +30,7 @@ exports.getNoteById = (req, res) => {
   Note.findById(id)
     .then((success) => {
       if (!success) response.notFound(res, `Note with id: ${id} was not found!`);
-      else response.success(res, note);
+      else response.success(res, success);
     })
     .catch((err) => {
       response.serverError(res, err, `Error in retrieving note with id: ${id}!`);
