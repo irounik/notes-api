@@ -1,12 +1,20 @@
-exports.badRequest = (res, message) => {
-  res.status(400).json({
+exports.badRequest = (res, message, errors) => {
+  const responseJson = {
     result: 'error',
     message: message,
+  };
+  if (errors) responseJson.errors = errors;
+  res.status(400).json(responseJson);
+};
+
+exports.unauthorized = (res, message) => {
+  res.status(401).json({
+    result: 'error',
+    message: message || 'User not authorized',
   });
 };
 
 exports.serverError = (res, err, message) => {
-  console.log(err);
   res.status(500).json({
     result: 'error',
     message: message || 'Internal server error',
