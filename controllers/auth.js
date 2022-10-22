@@ -18,6 +18,7 @@ exports.createUser = async (req, res) => {
     await newUser.save();
     response.success(res, `Created user with email: ${newUser.email}`);
   } catch (ex) {
+    console.log(ex);
     response.serverError(res);
   }
 };
@@ -52,6 +53,7 @@ exports.login = async (req, res) => {
       });
     });
   } catch (ex) {
+    console.log(ex);
     response.serverError(res);
   }
 };

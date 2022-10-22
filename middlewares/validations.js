@@ -1,15 +1,12 @@
 const { body, validationResult } = require('express-validator');
+const { INVALID_PASSOWRD, INVALID_USERNAME, INVALID_EMAIL } = require('../utils/constants');
 const { badRequest } = require('../utils/response');
 
-const validateEmail = body('email', 'Invalid email').exists().isEmail();
+const validateEmail = body('email', INVALID_EMAIL).isEmail();
 
-const validatePassword = body('password', 'Invalid password, it should be at least 6 digit long')
-  .exists()
-  .isLength({ min: 6 });
+const validatePassword = body('password', INVALID_PASSOWRD).isLength({ min: 6 });
 
-const validateUserName = body('name', 'Invalid username')
-  .exists()
-  .matches(/^[a-zA-Z ]+$/);
+const validateUserName = body('name', INVALID_USERNAME).matches(/^([a-zA-Z ]+){3,}$/);
 
 const checkErrors = (message) => (req, res, next) => {
   const errors = validationResult(req);
