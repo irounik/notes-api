@@ -1,0 +1,23 @@
+version: '3.0'
+services:
+  notes-api:
+    build: .
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    environment:
+      - PORT=3000
+  mongodb:
+    image: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb:/data/db
+volumes:
+  mongodb:
